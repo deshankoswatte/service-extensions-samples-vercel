@@ -3,6 +3,7 @@ require("dotenv").config();
 
 // Mock: valid department list (simulating a directory check)
 const validDepartments = ["Engineering", "HR", "Sales", "Finance"];
+const VALID_API_KEY = process.env.API_KEY; // Replace with your actual key
 
 // Email transporter config using environment variables
 const transporter = nodemailer.createTransport({
@@ -23,6 +24,16 @@ const getClaimValue = (claims, uri) => {
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
         return res.status(405).send('Method Not Allowed');
+    }
+
+    // Validate API key from headers
+    const apiKey = req.headers['api-key'];
+    if (!apiKey || apiKey !== VALID_API_KEY) {
+        return res.status(401).json({
+            actionStatus: 'FAILED',
+            failureReason: 'unauthorized',
+            failureDescription: 'Invalid or missing API key.',
+        });
     }
 
     const payload = req.body;

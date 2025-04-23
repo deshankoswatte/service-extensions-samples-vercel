@@ -1,12 +1,25 @@
 const geoip = require('geoip-lite');
 const countries = require('i18n-iso-countries');
+require("dotenv").config();
 
 // Load language (e.g., English)
 countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
 
+const VALID_API_KEY = process.env.API_KEY; // Replace with your actual key
+
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
         return res.status(405).send('Method Not Allowed');
+    }
+
+    // Validate API key from headers
+    const apiKey = req.headers['api-key'];
+    if (!apiKey || apiKey !== VALID_API_KEY) {
+        return res.status(401).json({
+            actionStatus: 'FAILED',
+            failureReason: 'unauthorized',
+            failureDescription: 'Invalid or missing API key.',
+        });
     }
 
     const additionalHeaders = req.body?.event?.request?.additionalHeaders;
