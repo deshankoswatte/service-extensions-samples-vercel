@@ -1,4 +1,8 @@
-const geoip = require('geoip-country');
+const geoip = require('geoip-lite');
+const countries = require('i18n-iso-countries');
+
+// Load language (e.g., English)
+countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
 
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
@@ -6,7 +10,7 @@ module.exports = async (req, res) => {
     }
 
     const additionalHeaders = req.body?.event?.request?.additionalHeaders;
-    const allowedCountries = ['United States'];
+    const disAllowedCountries = ['United States of America'];
     let clientIp = '101.2.176.0';
 
     if (Array.isArray(additionalHeaders)) {
@@ -27,9 +31,23 @@ module.exports = async (req, res) => {
     }
 
     const geo = geoip.lookup(clientIp);
-    const countryName = geo?.name;
+    let countryName = "";
+    if (geo) {
+        countryName = countries.getName(geo.country, "en");
+        console.log({
+            ...geo,
+            name: countryName
+        });
+    } else {
+        console.log("Geo info not found");
+        return res.status(200).json({
+            actionStatus: 'FAILED',
+            failureReason: 'geo_request',
+            failureDescription: `Geo location could not be decided.`,
+        });
+    }
 
-    if (allowedCountries.includes(countryName)) {
+    if (countryName.length < 1 || disAllowedCountries.includes(countryName)) {
         return res.status(200).json({
             actionStatus: 'FAILED',
             failureReason: 'geo_request',
