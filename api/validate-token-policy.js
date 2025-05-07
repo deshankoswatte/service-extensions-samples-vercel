@@ -1,4 +1,5 @@
 import https from "https";
+import geoiplite from "geoip-lite";
 import geoip from "geoip-country";
 import dotenv from "dotenv";
 
@@ -24,7 +25,7 @@ function getClientIp(req) {
 }
 
 function lookupCountry(ip) {
-    const geo = geoip.lookup(ip);
+    const geo = geoiplite.lookup(ip);
     return geo?.country || "UNKNOWN";
 }
 
