@@ -1,6 +1,5 @@
 import https from "https";
 import geoiplite from "geoip-lite";
-import geoip from "geoip-country";
 import dotenv from "dotenv";
 
 dotenv.config();
