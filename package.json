@@ -12,6 +12,7 @@
   "type": "commonjs",
   "dependencies": {
     "dotenv": "^16.5.0",
+    "geoip-country": "^4.2.201",
     "geoip-lite": "^1.4.10",
     "i18n-iso-countries": "^7.14.0",
     "nodemailer": "^6.10.1",

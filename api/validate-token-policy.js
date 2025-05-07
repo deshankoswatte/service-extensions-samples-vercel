@@ -130,7 +130,3 @@ module.exports = async (req, res) => {
         return res.json(denyResponse("Error checking IP reputation."));
     }
 };
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
